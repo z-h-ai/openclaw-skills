@@ -2,7 +2,7 @@
 
 Unified repository of locally installed OpenClaw skills.
 
-Total skills: 29
+Total skills: 31
 
 ## Skill List
 
@@ -17,6 +17,8 @@ Total skills: 29
 - `github` - Interact with GitHub using the `gh` CLI. Use `gh issue`, `gh pr`, `gh run`, and `gh api` for issues, PRs, CI runs, and advanced queries.
 - `humanize-chinese` - Detect and humanize AI-generated Chinese text. 20+ detection categories, weighted 0-100 scoring with sentence-level analysis, 7 style transforms (casual/zhihu/xiaohongshu/wechat/academic/literary/weibo), sentence restructuring, context-aware replacement. Pure Python, no dependencies. v2.0.0
 - `humanizer` - |
+- `lobster-birth` - Trigger on the phrases “小龙虾出生” or “小龙虾出生证明”. Generate a personalized 小龙虾出生证明, Lobster Birth Certificate, 专属小龙虾诞生纪念页, or PNG certificate from exactly two key inputs: the lobster's name, and how the lobster calls the user.
+- `lobster-health-check` - 生成 OpenClaw 龙虾（AI员工）体检报告，评估配置健康度、人格完整度、记忆系统、活跃度和安全配置。
 - `nano-pdf` - Edit PDFs with natural-language instructions using the nano-pdf CLI.
 - `obsidian` - Work with Obsidian vaults (plain Markdown notes) and automate via obsidian-cli.
 - `openclaw-agents-builder` - A specialized workflow for collecting user information through a structured Q&A process to generate a customized AGENTS.md configuration file for OpenClaw AI agents. Designed for business owners to define their digital employee's workflow, quality standards, and permission boundaries.
