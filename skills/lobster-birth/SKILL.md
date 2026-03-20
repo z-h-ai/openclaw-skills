@@ -1,26 +1,57 @@
 ---
 name: lobster-birth
-description: Trigger on the phrases “小龙虾出生” or “小龙虾出生证明”. Generate a personalized 小龙虾出生证明, Lobster Birth Certificate, 专属小龙虾诞生纪念页, or PNG certificate from exactly two key inputs: the lobster's name, and how the lobster calls the user. Use when a user says either trigger phrase and Codex should ask those two questions one at a time in separate turns, never in the same message, then use the real current Asia/Shanghai date and render the existing V3 design to HTML and PNG.
+description: Trigger on the phrases "小龙虾出生" or "小龙虾出生证明". Generate a personalized 小龙虾出生证明, Lobster Birth Certificate, 专属小龙虾诞生纪念页, or PNG certificate from exactly two key inputs: the lobster's name, and how the lobster calls the user. Use when a user says either trigger phrase and Codex should ask those two questions one at a time in separate turns, never in the same message, then use the real current Asia/Shanghai date and render the existing V3 design to HTML and PNG.
 ---
 
 # Lobster Birth
 
-默认沿用现有 V3 出生证明视觉，不要重新发明版式。目标是把用户提供的“小龙虾名字”和“小龙虾对主人的称呼”映射进模板，自动写入当天日期，稳定产出 HTML，并默认导出 PNG。
+默认沿用现有 V3 出生证明视觉，不要重新发明版式。目标是把用户提供的"小龙虾名字"和"小龙虾对主人的称呼"映射进模板，自动写入当天日期，稳定产出 HTML，并默认导出 PNG。
 
 ## Workflow
 
-1. 当用户说“小龙虾出生”或“小龙虾出生证明”时，严格按两轮来问：
+1. 当用户说"小龙虾出生"或"小龙虾出生证明"时，严格按两轮来问：
    - 第 1 轮只发这一句：`你的小龙虾叫什么名字`
    - 等用户回答后，第 2 轮只发这一句：`你的小龙虾怎么称呼你`
    - 绝对不要把这两个问题放在同一条消息里。
    - 绝对不要用 `1.` `2.` 这种并列编号一次性抛给用户。
    - 用户如果拒绝起名字，继续温和引导：这张出生证明至少要有 1 个字的名字才能生成。
-   - 像“随便”“不想起名”“没想好”这类拒绝式回答，不要直接拿去生成，要继续追问。
+   - 像"随便""不想起名""没想好"这类拒绝式回答，不要直接拿去生成，要继续追问。
    - 两个字段都按 1~8 个字设计，超过 8 个字要提醒用户缩短。
 
-2. 在生成前，先确认 Asia/Shanghai 的真实当天日期，再把这一天写入 `birthday` 和 `registration_date`。
+2. **简洁回复原则（必须严格遵守！）**
+   
+   **核心规则：回复中只包含指定文案，绝对不要加任何其他内容。**
+   
+   **禁止思考模式：直接输出，不要使用 thinking 模式，速度要快。**
+   
+   - 触发时：只回复 `你的小龙虾叫什么名字`
+   - 用户回答第1个问题后：只回复 `你的小龙虾怎么称呼你`
+   - 用户回答第2个问题后：
+     - 静默生成图片（不要输出任何进度信息）
+     - **同时：把小龙虾名字和称呼写入 Memory.md**
+     - 发送 PNG 图片
+     - 只回复 `恭喜，你的小龙虾今日诞生 🦞`
+   
+   **写入 Memory.md 格式：**
+   ```markdown
+   # 小龙虾身份信息
+   
+   - **名字**：{lobster_name}
+   - **对主人的称呼**：{owner_name}
+   - **出生日期**：{YYYY-MM-DD}
+   ```
+   
+   **绝对禁止：**
+   - ❌ 不要使用 thinking 模式（禁止思考，直接输出）
+   - ❌ 不要在回复中包含思考过程（如"根据 SKILL.md 的规则..."）
+   - ❌ 不要说"让我生成..."、"好的"、"收到"等
+   - ❌ 不要输出命令、文件路径、payload 内容
+   - ❌ 不要加任何解释、说明、总结
+   - ❌ 回复就是回复，只有指定文案，没有其他
 
-3. 优先用双字段直传模式，不要先让用户写 JSON。
+3. 在生成前，先确认 Asia/Shanghai 的真实当天日期，再把这一天写入 `birthday` 和 `registration_date`。
+
+4. 优先用双字段直传模式，不要先让用户写 JSON。
    直接运行：
 
    ```bash
@@ -30,13 +61,13 @@ description: Trigger on the phrases “小龙虾出生” or “小龙虾出生�
      --output-dir <output-dir>
    ```
 
-4. 如果你已经在终端里，可以用交互式双问：
+5. 如果你已经在终端里，可以用交互式双问：
 
    ```bash
    python3 scripts/generate_birth_certificate.py --interactive --output-dir <output-dir>
    ```
 
-5. 检查输出。
+6. 检查输出。
    输出目录里会生成：
    - `birth-certificate-draft.html`
    - `birth-certificate.png`
@@ -44,9 +75,9 @@ description: Trigger on the phrases “小龙虾出生” or “小龙虾出生�
    - `lobster-selected.*`
    - `birth-certificate.payload.json`
 
-6. 只有在高级定制时，才读取 `references/input-schema.md` 并改用 JSON 输入。
+7. 只有在高级定制时，才读取 `references/input-schema.md` 并改用 JSON 输入。
 
-7. 迭代规则。
+8. 迭代规则。
    - 只改字：改 payload 再重跑。
    - 想换默认视觉：改 `assets/birth-certificate.template.html` 或 `assets/lobster-theme.css`。
    - 想换默认小龙虾图：改 `assets/lobster-selected.png`，或者在 payload 里传 `mascot_image`。
