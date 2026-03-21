@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>小龙虾出生证明 - 秋秋</title>
+  <link rel="stylesheet" href="./lobster-theme.css" />
+  <style>
+    .certificate {
+      /* Type scale: 48 / 18 / 15 / 12 / 11 */
+      --fs-display: 48px;
+      --fs-heading: 18px;
+      --fs-label: 15px;
+      --fs-body: 12px;
+      --fs-meta: 11px;
+      padding: 58px 70px 42px;
+    }
+
+    .certificate .shell-label {
+      font-size: var(--fs-meta);
+    }
+
+    .certificate .title-cn {
+      font-size: var(--fs-display);
+      line-height: 1.02;
+    }
+
+    .certificate .title-en {
+      font-size: var(--fs-meta);
+    }
+
+    .certificate .section-kicker {
+      font-size: var(--fs-meta);
+    }
+
+    .cert-header {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr 246px;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .cert-copy {
+      margin-top: 14px;
+      max-width: 416px;
+    }
+
+    .cert-copy p + p {
+      margin-top: 10px;
+      font-size: var(--fs-label);
+      line-height: 1.68;
+    }
+
+    .fill-line {
+      display: inline-block;
+      min-width: 3.6em;
+      padding: 0 4px 2px;
+      border-bottom: 1.5px solid rgba(23, 53, 79, 0.42);
+      text-align: center;
+      vertical-align: baseline;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .record-block {
+      padding-top: 8px;
+      border-top: 1px solid rgba(184, 141, 82, 0.42);
+    }
+
+    .cert-body {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 170px 1fr 170px;
+      gap: 12px;
+      align-items: start;
+      margin-top: 14px;
+    }
+
+    .trait-card h3 {
+      margin: 0;
+      font-size: var(--fs-label);
+      line-height: 1.24;
+      font-family: "Songti SC", "STSong", serif;
+    }
+
+    .trait-card p {
+      margin: 8px 0 0;
+      font-size: var(--fs-body);
+      line-height: 1.62;
+      color: var(--ink-soft);
+    }
+
+    .trait-card + .trait-card {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed rgba(23, 53, 79, 0.12);
+    }
+
+    .hero-stack {
+      display: grid;
+      justify-items: center;
+      gap: 2px;
+      padding-top: 0;
+      margin-top: -12px;
+    }
+
+    .hero-stack .lead {
+      text-align: center;
+      max-width: 300px;
+      font-size: var(--fs-heading);
+      line-height: 1.58;
+    }
+
+    .arrival-note {
+      margin-top: -2px;
+      font-size: var(--fs-meta);
+      letter-spacing: 0.14em;
+      color: var(--red-deep);
+      font-weight: 700;
+    }
+
+    .mascot-svg {
+      width: 286px;
+      height: 194px;
+      position: relative;
+      z-index: 1;
+      overflow: visible;
+      border-radius: 0;
+    }
+
+    .mascot-svg img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      transform: scale(1.06);
+      transform-origin: center center;
+    }
+
+    .kit-section {
+      position: relative;
+      z-index: 2;
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(184, 141, 82, 0.42);
+    }
+
+    .kit-title {
+      margin: 0;
+      font-size: var(--fs-heading);
+      letter-spacing: 0.18em;
+      line-height: 1.18;
+      color: var(--red-deep);
+      font-weight: 700;
+      font-family: "Songti SC", "STSong", serif;
+    }
+
+    .kit-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px 18px;
+      margin-top: 6px;
+    }
+
+    .kit-card h4 {
+      margin: 0;
+      font-size: var(--fs-label);
+      line-height: 1.24;
+      font-family: "Songti SC", "STSong", serif;
+    }
+
+    .kit-card {
+      min-width: 0;
+      padding-right: 10px;
+    }
+
+    .kit-card p {
+      margin: 6px 0 0;
+      font-size: var(--fs-body);
+      line-height: 1.45;
+      color: var(--ink-soft);
+    }
+
+    .cert-footer {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 18px;
+    }
+
+    .registry {
+      position: relative;
+      width: 206px;
+      padding-top: 4px;
+      border-top: 1px solid rgba(184, 141, 82, 0.42);
+    }
+
+    .certificate .info-pair {
+      font-size: var(--fs-body);
+      line-height: 1.45;
+    }
+
+    .certificate .info-pair .v {
+      max-width: 9.6em;
+      min-width: 0;
+      word-break: break-all;
+      line-height: 1.34;
+    }
+
+    .certificate .registry .info-pair {
+      font-size: var(--fs-meta);
+      padding: 3px 0;
+    }
+
+    .record-block .section-kicker,
+    .registry .section-kicker {
+      margin-bottom: 6px;
+    }
+
+    .record-block > .section-kicker,
+    .registry > .section-kicker,
+    .kit-title {
+      font-size: var(--fs-heading);
+      line-height: 1.18;
+      letter-spacing: 0.04em;
+      text-transform: none;
+      font-family: "Songti SC", "STSong", serif;
+    }
+
+    .cert-copy .lead {
+      font-size: var(--fs-heading);
+      line-height: 1.65;
+    }
+  </style>
+</head>
+<body>
+  <main class="poster certificate">
+    <div class="grain"></div>
+
+    <header class="cert-header">
+      <section>
+        <span class="shell-label">Birth Registry</span>
+        <h1 class="title-cn">小龙虾出生证明</h1>
+        <p class="title-en">Lobster Birth Certificate</p>
+        <div class="cert-copy">
+          <p class="lead"><span class="fill-line" style="min-width:3.8em">妈妈</span>的一只小龙虾，<br />今日诞生。</p>
+          <p class="lead subtle">从今天起，会帮你干活，也会慢慢懂你。</p>
+        </div>
+      </section>
+
+      <aside class="mini-card record-block">
+        <span class="section-kicker">诞生档案</span>
+        <div class="info-pair"><span class="k">姓名</span><span class="v">秋秋</span></div>
+<div class="info-pair"><span class="k">生日</span><span class="v">2026年03月21日</span></div>
+<div class="info-pair"><span class="k">陪伴人</span><span class="v">妈妈</span></div>
+<div class="info-pair"><span class="k">编号</span><span class="v">Z-H-AI-0321-068</span></div>
+<div class="info-pair"><span class="k">品系</span><span class="v">OpenClaw</span></div>
+      </aside>
+    </header>
+
+    <section class="cert-body">
+      <section class="mini-card record-block">
+        <span class="section-kicker">性情与心愿</span>
+        <div class="trait-card"><h3>性情</h3><p>机灵、热心、记性好</p></div>
+<div class="trait-card"><h3>本领</h3><p>先查清，再动手</p></div>
+<div class="trait-card"><h3>心愿</h3><p>帮你省心、省力、省钱</p></div>
+      </section>
+
+      <section class="hero-stack">
+        <div class="mascot-emblem">
+          <div class="mascot-svg" aria-label="选定的小龙虾">
+            <img src="./lobster-selected.png" alt="选定的小龙虾" />
+          </div>
+        </div>
+        <div class="arrival-note">已出生</div>
+        <p class="lead">今天到家。<br />以后陪你一起长大。</p>
+      </section>
+
+      <section class="mini-card record-block">
+        <span class="section-kicker">诞生印记</span>
+        <div class="trait-card"><h3>出生状态</h3><p>已出生</p></div>
+<div class="trait-card"><h3>随身技能</h3><p>34个skill，8大能力模块</p></div>
+<div class="trait-card"><h3>此刻状态</h3><p>等待培养</p></div>
+      </section>
+    </section>
+
+    <section class="kit-section">
+      <h3 class="kit-title">6本秘籍</h3>
+      <div class="kit-grid"><article class="mini-card kit-card"><h4>SOUL.md</h4><p>先装灵魂</p></article>
+<article class="mini-card kit-card"><h4>AGENTS.md</h4><p>照单开干</p></article>
+<article class="mini-card kit-card"><h4>USER.md</h4><p>懂你脾气</p></article>
+<article class="mini-card kit-card"><h4>HEARTBEAT.md</h4><p>自带闹钟</p></article>
+<article class="mini-card kit-card"><h4>IDENTITY.md</h4><p>先认工牌</p></article>
+<article class="mini-card kit-card"><h4>MEMORY.md</h4><p>越养越懂</p></article></div>
+    </section>
+
+    <footer class="cert-footer">
+      <aside class="registry mini-card">
+        <span class="section-kicker">登记信息</span>
+        <div class="info-pair"><span class="k">机构</span><span class="v">智回科技</span></div>
+<div class="info-pair"><span class="k">日期</span><span class="v">2026年03月21日</span></div>
+<div class="info-pair"><span class="k">类型</span><span class="v">诞生登记</span></div>
+      </aside>
+    </footer>
+
+    <div class="seal" style="right: 52px; bottom: 126px; width: 176px; height: 176px;">
+      <div>
+        <strong>今日诞生</strong>
+        <span>WELCOME HOME</span>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,53 @@
+{
+  "owner_name": "妈妈",
+  "lobster_name": "秋秋",
+  "birthday": "2026 年 03 月 21 日",
+  "title_cn": "小龙虾出生证明",
+  "title_en": "Lobster Birth Certificate",
+  "companion_name": "妈妈",
+  "lineage": "OpenClaw",
+  "main_copy_primary": "{owner_name}的一只小龙虾，\n今日诞生。",
+  "main_copy_secondary": "从今天起，会帮你干活，也会慢慢懂你。",
+  "temperament": "机灵、热心、记性好",
+  "ability": "先查清，再动手",
+  "wish": "帮你省心、省力、省钱",
+  "arrival_status": "已出生",
+  "skill_count": "34个skill，8大能力模块",
+  "current_status": "等待培养",
+  "hero_message": "今天到家。\n以后陪你一起长大。",
+  "registry_org": "智回科技",
+  "registration_date": "2026 年 03 月 21 日",
+  "registration_type": "诞生登记",
+  "seal_title": "今日诞生",
+  "seal_subtitle": "WELCOME HOME",
+  "mascot_alt": "选定的小龙虾",
+  "kit_section_title": "6本秘籍",
+  "certificate_id": "Z-H-AI-0321-068",
+  "kit_items": [
+    {
+      "title": "SOUL.md",
+      "description": "先装灵魂"
+    },
+    {
+      "title": "AGENTS.md",
+      "description": "照单开干"
+    },
+    {
+      "title": "USER.md",
+      "description": "懂你脾气"
+    },
+    {
+      "title": "HEARTBEAT.md",
+      "description": "自带闹钟"
+    },
+    {
+      "title": "IDENTITY.md",
+      "description": "先认工牌"
+    },
+    {
+      "title": "MEMORY.md",
+      "description": "越养越懂"
+    }
+  ],
+  "page_title": "小龙虾出生证明 - 秋秋"
+}
