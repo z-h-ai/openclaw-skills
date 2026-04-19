@@ -34,6 +34,7 @@ ICONS_DIR = SKILL_DIR / "assets" / "icons"
 FONTS_DIR = SKILL_DIR / "assets" / "fonts"
 
 CHROME_PATHS = [
+    "/root/.cache/ms-playwright/chromium-*/chrome-linux64/chrome",
     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
     "/Applications/Chromium.app/Contents/MacOS/Chromium",
     "google-chrome",
@@ -44,8 +45,33 @@ W, H = 900, 1200
 CHARS_PER_PAGE = 280
 
 
+def emit_workspace_media_copy(out_path: Path):
+    cwd = Path.cwd().resolve()
+    tmp_dir = cwd / "tmp"
+    tmp_dir.mkdir(parents=True, exist_ok=True)
+    safe_path = tmp_dir / out_path.name
+    try:
+        same_file = out_path.resolve() == safe_path.resolve()
+    except FileNotFoundError:
+        same_file = False
+    if not same_file:
+        shutil.copy2(out_path, safe_path)
+    else:
+        safe_path = out_path
+    try:
+        rel = safe_path.resolve().relative_to(cwd)
+    except ValueError:
+        return
+    print(f"MEDIA:./{rel.as_posix()}")
+
+
 def find_chrome():
     for p in CHROME_PATHS:
+        if "*" in p:
+            matches = sorted(Path("/").glob(p.lstrip("/")), reverse=True)
+            if matches:
+                return str(matches[0])
+            continue
         if Path(p).exists() or shutil.which(p):
             return p
     return None
@@ -124,22 +150,31 @@ def split_text_into_pages(text: str, chars_per_page: int) -> list:
     return pages
 
 
+def basic_markdown_to_html(text: str) -> str:
+    blocks = []
+    paragraphs = [p for p in re.split(r'\n{2,}', text.strip()) if p.strip()]
+    for paragraph in paragraphs:
+        lines = [escape(line) for line in paragraph.splitlines()]
+        blocks.append(f"<p>{'<br>'.join(lines)}</p>")
+    return '\n'.join(blocks) if blocks else f"<p>{escape(text)}</p>"
+
+
 def text_to_html(text: str) -> str:
-    """把文本整体交给 markdown 渲染，支持完整 MD 语法"""
+    """把文本整体交给 markdown 渲染，支持完整 MD 语法；缺依赖时降级为基础段落渲染"""
     try:
         import markdown as md_lib
     except ImportError:
-        sys.exit('需要安装 markdown 库：pip install markdown')
+        return basic_markdown_to_html(text)
     return md_lib.markdown(text, extensions=['fenced_code', 'tables', 'nl2br'])
 
 
 def md_to_html(text: str) -> str:
-    """把 Markdown 转成 HTML 片段，需要 pip install markdown"""
+    """把 Markdown 转成 HTML 片段；缺依赖时降级为基础段落渲染"""
     try:
         import markdown
         return markdown.markdown(text, extensions=['fenced_code', 'tables', 'nl2br'])
     except ImportError:
-        sys.exit('需要安装 markdown 库：pip install markdown')
+        return basic_markdown_to_html(text)
 
 
 def render_page(chrome, tpl, out_path, title, content_html, page_label, bottom_tip,
@@ -165,6 +200,7 @@ def render_page(chrome, tpl, out_path, title, content_html, page_label, bottom_t
         f.write(html)
         tmp_html = f.name
 
+    out_path.parent.mkdir(parents=True, exist_ok=True)
     cmd = [
         chrome, '--headless', '--disable-gpu', '--no-sandbox',
         f'--screenshot={out_path}',
@@ -175,7 +211,10 @@ def render_page(chrome, tpl, out_path, title, content_html, page_label, bottom_t
     Path(tmp_html).unlink(missing_ok=True)
     if result.returncode != 0:
         sys.exit(f'Chrome failed:\n{result.stderr.decode()}')
+    if not out_path.exists():
+        sys.exit(f'Chrome exited without creating screenshot: {out_path}\n{result.stderr.decode()}')
     print(f'✅ {out_path}')
+    emit_workspace_media_copy(out_path)
 
 
 def main():
