@@ -38,6 +38,7 @@ ICONS_DIR = SKILL_DIR / "assets" / "icons"
 FONTS_DIR = SKILL_DIR / "assets" / "fonts"
 
 CHROME_PATHS = [
+    "/root/.cache/ms-playwright/chromium-*/chrome-linux64/chrome",
     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
     "/Applications/Chromium.app/Contents/MacOS/Chromium",
     "google-chrome",
@@ -52,10 +53,35 @@ DISPLAY_TZ = ZoneInfo("Asia/Shanghai")
 DISPLAY_TZ_LABEL = "UTC+8"
 
 
+def emit_workspace_media_copy(out_path: Path):
+    cwd = Path.cwd().resolve()
+    tmp_dir = cwd / "tmp"
+    tmp_dir.mkdir(parents=True, exist_ok=True)
+    safe_path = tmp_dir / out_path.name
+    try:
+        same_file = out_path.resolve() == safe_path.resolve()
+    except FileNotFoundError:
+        same_file = False
+    if not same_file:
+        shutil.copy2(out_path, safe_path)
+    else:
+        safe_path = out_path
+    try:
+        rel = safe_path.resolve().relative_to(cwd)
+    except ValueError:
+        return
+    print(f"MEDIA:./{rel.as_posix()}")
+
+
 def find_chrome():
-    for path in CHROME_PATHS:
-        if Path(path).exists() or shutil.which(path):
-            return path
+    for p in CHROME_PATHS:
+        if "*" in p:
+            matches = sorted(Path("/").glob(p.lstrip("/")), reverse=True)
+            if matches:
+                return str(matches[0])
+            continue
+        if Path(p).exists() or shutil.which(p):
+            return p
     return None
 
 
@@ -287,8 +313,11 @@ def main():
     Path(tmp_html).unlink(missing_ok=True)
     if result.returncode != 0:
         sys.exit(f"Chrome failed:\n{result.stderr.decode()}")
+    if not out.exists():
+        sys.exit(f"Chrome exited without creating screenshot: {out}\n{result.stderr.decode()}")
 
     print(f"✅ Saved to {out}")
+    emit_workspace_media_copy(out)
 
 
 if __name__ == "__main__":
